@@ -1,5 +1,6 @@
 package umm3601;
 
+import umm3601.todo.TodoController;
 import umm3601.user.UserController;
 
 import java.io.IOException;
@@ -11,6 +12,7 @@ public class Server {
     public static void main(String[] args) throws IOException {
 
         UserController userController = new UserController();
+        TodoController todoController = new TodoController();
 
         options("/*", (request, response) -> {
 
@@ -47,6 +49,19 @@ public class Server {
             res.type("application/json");
             String id = req.params("id");
             return userController.getUser(id);
+        });
+
+        // Todo users
+        get("api/todos", (req, res) -> {
+            res.type("application/json");
+            return todoController.listTodos(req.queryMap().toMap());
+        });
+
+        // See specific todo
+        get("api/todos/:id", (req, res) -> {
+            res.type("application/json");
+            String id = req.params("id");
+            return todoController.getTodo(id);
         });
 
         // Get average ages by company
