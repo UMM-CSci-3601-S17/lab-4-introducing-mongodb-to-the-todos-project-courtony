@@ -9,19 +9,29 @@ import { FilterBy } from "../users/filter.pipe";
     providers: [ FilterBy ]
 })
 
-export class TodoListComponent implements OnInit {
+export class TodoListComponent {
     public todos: Todo[];
+    public Msg: string = "Enter";
+    public searchOwner: string;
+    public searchCategory: string;
+    public targetStatus: boolean;
 
     constructor(private todoListService: TodoListService) {
         // this.users = this.userListService.getUsers();
     }
 
-    ngOnInit(): void {
-        this.todoListService.getTodos().subscribe(
+    // ngOnInit(): void {
+    // }
+
+    onClickMe() {
+        this.Msg = 'Searching';
+        this.todoListService.getTodos(this.searchOwner, this.searchCategory, this.targetStatus).subscribe(
             todos => this.todos = todos,
             err => {
                 console.log(err);
             }
         );
+
+        this.Msg = 'Enter';
     }
 }

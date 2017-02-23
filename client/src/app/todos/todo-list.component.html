@@ -1,16 +1,18 @@
 <ul class="list-group">
     <li class="list-group-item list-group-item-info">
         <input #input type="text" placeholder="Filter by owner" (input)="searchOwner = $event.target.value">
-        <select #input (input)="targetStatus = $event.target.value">
+        <input #input type="text" placeholder="Filter by category" (input)="searchCategory = $event.target.value">
+        <select #input id="targetStatus" (input)="targetStatus = $event.target.value">
             <option value="">Sort by Status</option>
             <option value="1">Complete</option>
             <option value="0">Incomplete</option>
         </select>
-        <input #input type="text" placeholder="Filter by category" (input)="targetCategory = $event.target.value">
-        <input #input type="text" placeholder="Search Body" (input)="bodySearch = $event.target.value">
+
+        <button (click)="onClickMe($event)">{{Msg}}</button>
     </li>
+    <li class="list-group-item list-group-item-info"><input #input type="text" placeholder="Search Body" (input)="bodySearch = $event.target.value"></li>
     <li class="list-group-item list-group-item-info">Todos</li>
-    <li *ngFor="let todo of todos | filterBy: {owner: searchOwner} | filterBy: { status: targetStatus } | filterBy: { category: targetCategory } | filterBy: { body: bodySearch }" class="list-group-item">
+    <li *ngFor="let todo of todos | filterBy: { body: bodySearch }" class="list-group-item">
         <div class="row text-center">
             <span class="col-md-4">{{ todo.owner }}</span>
             <span class="col-md-4" [style.color]="todo.status ? 'darkgreen' : 'coral'"
