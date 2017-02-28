@@ -70,6 +70,12 @@ public class Server {
             return userController.getAverageAgeByCompany();
         });
 
+        // Get a summary of the data
+        get("api/todoSummary", (req, res) -> {
+            res.type("application/json");
+            return todoController.todoSummary();
+        });
+
         // Handle "404" file not found requests:
         notFound((req, res) -> {
             res.type("text");

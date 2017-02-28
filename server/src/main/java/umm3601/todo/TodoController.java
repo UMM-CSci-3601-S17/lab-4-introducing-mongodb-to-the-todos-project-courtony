@@ -5,17 +5,19 @@ import com.mongodb.client.AggregateIterable;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.MongoIterable;
 import com.mongodb.client.model.Accumulators;
 import com.mongodb.client.model.Aggregates;
 import com.mongodb.client.model.Sorts;
+import com.mongodb.client.model.Projections;
+
 import com.mongodb.util.JSON;
 import org.bson.Document;
+import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 import static com.mongodb.client.model.Filters.eq;
 
@@ -80,17 +82,68 @@ public class TodoController {
         return todo.toJson();
     }
 
+    private List<String> getData(String field) {
+        AggregateIterable<Document> data = todoCollection.aggregate(Arrays.asList(Aggregates.group(field)));
+        List<String> result = new ArrayList<>();
+
+        for(Document document: data){
+            result.add(document.getString("_id"));
+        }
+
+        return result;
+    }
+
+    private Document categoriesCompelete(List<String> categories){
+        Document result = new Document();
+
+        for(String category: categories){
+            result.append(category, (float)completeField("category", category)/ todoCollection.count(eq("category", category)));
+        }
+
+        return result;
+    }
+
+    private Document ownersCompelete(List<String> owners){
+        Document result = new Document();
+
+        for(String owner: owners){
+            result.append(owner, (float)completeField("owner", owner)/ todoCollection.count(eq("owner", owner)));
+        }
+
+        return result;
+    }
+
+    private long completeField(String fields, String val){
+        Document countDoc = new Document();
+        countDoc.append(fields, val);
+        countDoc.append("status", true);
+        return todoCollection.count(countDoc);
+    }
+
+    public String todoSummary() {
+        Document container = new Document();
+        double totalPercent = (double) todoCollection.count(eq("status",true)) / todoCollection.count();
+
+        List<String> categoryList = getData("$category");
+        List<String> ownerList = getData("$owner");
+        container.append("percentageTodosComplete", totalPercent);
+        container.append("categoriesPercentComplete", categoriesCompelete(categoryList));
+        container.append("ownersPercentComplete", ownersCompelete(ownerList));
+
+        return JSON.serialize(container);
+    }
+
     // Get the average age of all todos by company
-//    public String getAverageAgeByCompany() {
-//        AggregateIterable<Document> documents
-//                = todoCollection.aggregate(
-//                Arrays.asList(
-//                        Aggregates.group("$company",
-//                                Accumulators.avg("averageAge", "$age")),
-//                        Aggregates.sort(Sorts.ascending("_id"))
-//                ));
-//        System.err.println(JSON.serialize(documents));
-//        return JSON.serialize(documents);
-//    }
+    public String getAverageAgeByCompany() {
+        AggregateIterable<Document> documents
+                = todoCollection.aggregate(
+                Arrays.asList(
+                        Aggregates.group("$company",
+                                Accumulators.avg("averageAge", "$age")),
+                        Aggregates.sort(Sorts.ascending("_id"))
+                ));
+        System.err.println(JSON.serialize(documents));
+        return JSON.serialize(documents);
+    }
 
 }
