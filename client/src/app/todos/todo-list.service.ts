@@ -8,16 +8,17 @@ import {isUndefined} from "util";
 export class TodoListService {
     private todoUrl: string = API_URL + "todos";
     constructor(private http:Http) { }
-    private state; string;
     private first: boolean;
 
-    buildQuery(owner: string, category: string, status: boolean): void {
+    buildQuery(owner: string, category: string, status: any): void {
         this.todoUrl = API_URL +"todos";
         this.first = true;
+
         if (owner) {
             this.todoUrl = this.todoUrl + "?owner=" + owner;
             this.first = false;
         }
+
         if (category) {
             if (this.first) {
                 this.todoUrl = this.todoUrl + "?category=" + category;
@@ -27,46 +28,17 @@ export class TodoListService {
             }
         }
 
-        if (!isUndefined(status)) {
-            // if(status = 1){
-            //     this.state = "true";
-            // }else {
-            //     this.state = "false";
-            // }
+        if (!isUndefined(status) && status !== "") {
             if (this.first) {
-                this.todoUrl = this.todoUrl + "?status=" + this.state;
+                this.todoUrl = this.todoUrl + "?status=" + status;
             } else {
-                this.todoUrl = this.todoUrl + "&status=" + this.state;
+                this.todoUrl = this.todoUrl + "&status=" + status;
             }
         }
     }
 
     getTodos(owner: string, category: string, status: boolean): Observable<Todo[]> {
-        // if(status){
-        //     this.state= "complete";
-        // }else if (!status) {
-        //     this.state = "incomplete";
-        // }
-        // if(owner != null && owner != ""){
-        //     this.todoUrl = this.todoUrl +"?owner="+owner;
-        // }
-        // if(category != null && category != ""){
-        //     if(owner != null && owner != ""){
-        //         this.todoUrl = this.todoUrl + "&category=" + category;
-        //     }else{
-        //         this.todoUrl = this.todoUrl + "?category=" + category;
-        //     }
-        // }
-        // if(status != null){
-        //     if((category != null && category != "") || (owner != null && owner != "")){
-        //         this.todoUrl = this.todoUrl + "&status=" + this.state;
-        //     }else{
-        //             this.todoUrl = this.todoUrl + "?status=" + this.state;
-        //         }
-        //
-        // }
         this.buildQuery(owner, category, status);
-        console.log(this.todoUrl);
         return this.http.request(this.todoUrl).map(res => res.json());
     }
 
