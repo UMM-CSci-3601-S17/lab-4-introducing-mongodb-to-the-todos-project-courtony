@@ -1,0 +1,27 @@
+<ul class="list-group">
+    <li class="list-group-item list-group-item-info">
+        <input #input type="text" placeholder="Filter by owner" (input)="searchOwner = $event.target.value">
+        <input #input type="text" placeholder="Filter by category" (input)="searchCategory = $event.target.value">
+        <select #input id="targetStatus" (input)="targetStatus = $event.target.value">
+            <option value="">Sort by Status</option>
+            <option value="true">Complete</option>
+            <option value="false">Incomplete</option>
+        </select>
+
+        <button (click)="onClickMe($event)">{{Msg}}</button>
+    </li>
+    <li class="list-group-item list-group-item-info"><input #input type="text" placeholder="Search Body" (input)="bodySearch = $event.target.value"></li>
+    <li class="list-group-item list-group-item-info">Todos</li>
+    <li *ngFor="let todo of todos | filterBy: { body: bodySearch }" class="list-group-item">
+        <div class="row text-center">
+            <span class="col-md-4">{{ todo.owner }}</span>
+            <span class="col-md-4" [style.color]="todo.status ? 'darkgreen' : 'coral'"
+                  [style.border-radius.px]="4"
+                  [style.padding]="2"><strong>{{todo.status ? "Complete" : "Incomplete"}}</strong></span>
+            <span class="col-md-4">{{ todo.category }}</span>
+        </div>
+        <div class="row">
+            <span class="col-md-12">{{ todo.body }}</span>
+        </div>
+    </li>
+</ul>
