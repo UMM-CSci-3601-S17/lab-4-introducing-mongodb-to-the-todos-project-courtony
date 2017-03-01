@@ -24,6 +24,9 @@ describe("Todo list", () => {
 
     let todoListServiceStub: {
         getTodos: () => Observable<Todo[]>
+        // This is the part that isn't working, I think, and it's not
+        // working because our getTodos function take parameters.
+        // I can't figure out how to get this to take parameters.
     };
 
     beforeEach(() => {
@@ -74,7 +77,7 @@ describe("Todo list", () => {
             providers:    [ { provide: TodoListService, useValue: todoListServiceStub } ]
         })
     });
-    
+
     beforeEach(async(() => {
         TestBed.compileComponents().then(() => {
             fixture = TestBed.createComponent(TodoListComponent);
@@ -84,6 +87,10 @@ describe("Todo list", () => {
     }));
 
     it("contains all the todos", () => {
+        //console.log(todoList.todos.toString());
+        //  ^ yells, undefined is not an object
+        console.log(todoList.toString());
+        // ^ prints "'[object Object]'"
         expect(todoList.todos.length).toBe(5);
     });
 
@@ -96,8 +103,13 @@ describe("Todo list", () => {
     });
 
     it("has two todos that are in the category 'software design'", () => {
-        expect(todoList.todos.filter((todo: Todo) => todo.category === 'software design').length).toBe(2);
+        expect(todoList.todos.filter((todo: Todo) => todo.category === "software design").length).toBe(2);
     });
+
+    it("does somethig hopefully", () => {
+        expect(API_URL).toBe("http://localhost:4567/api/");
+    })
+
 
 
 
