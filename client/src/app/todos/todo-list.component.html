@@ -8,10 +8,20 @@
             <option value="false">Incomplete</option>
         </select>
 
-        <button (click)="onClickMe($event)">{{Msg}}</button>
+        <button (click)="onClickMe($event)"><span class="glyphicon glyphicon-ok"></span>Go!</button>
     </li>
     <li class="list-group-item list-group-item-info"><input #input type="text" placeholder="Search Body" (input)="bodySearch = $event.target.value"></li>
-    <li class="list-group-item list-group-item-info">Todos</li>
+    <li class="list-group-item list-group-item-info text-center">
+       <h3> <span class="label label-info">Todos</span></h3>
+    </li>
+    <div class="progress">
+        <div class="progress-bar progress-bar-success" style="width: 47%">
+            All Completed Todos (47%)
+        </div>
+        <div class="progress-bar progress-bar-danger" style="width: 53%">
+            All Incompleted Todos (53%)
+        </div>
+    </div>
     <li *ngFor="let todo of todos | filterBy: { body: bodySearch }" class="list-group-item">
         <div class="row text-center">
             <span class="col-md-4">{{ todo.owner }}</span>
@@ -24,4 +34,5 @@
             <span class="col-md-12">{{ todo.body }}</span>
         </div>
     </li>
+
 </ul>
