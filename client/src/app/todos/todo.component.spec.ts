@@ -1,15 +1,4 @@
-// import {TodoListService} from "./todo-list.service";
-// /**
-//  * Created by cookx876 on 2/28/17.
-//  */
-//
-//
-// describe ("todo lists", () => {
-//     it("makes the correct URL", () => {
-//         let service: TodoListService = new TodoListService();
-//         expect(TodoListService.b);
-//     })
-// }
+
 import { ComponentFixture, TestBed, async } from "@angular/core/testing";
 import { Todo } from "./todo";
 import { TodoListComponent } from "./todo-list.component";
@@ -23,16 +12,13 @@ describe("Todo list", () => {
     let fixture: ComponentFixture<TodoListComponent>;
 
     let todoListServiceStub: {
-        getTodos: () => Observable<Todo[]>
-        // This is the part that isn't working, I think, and it's not
-        // working because our getTodos function take parameters.
-        // I can't figure out how to get this to take parameters.
+        getTodos: (owner: string, category: string, status: boolean) => Observable<Todo[]>
     };
 
     beforeEach(() => {
         // mock todolist
         todoListServiceStub = {
-            getTodos: () => Observable.of([
+            getTodos: (owner: string, category: string, status: boolean) => Observable.of([
                 {
                     id: "58895985a22c04e761776d54",
                     owner: "Blanche",
@@ -87,30 +73,29 @@ describe("Todo list", () => {
     }));
 
     it("contains all the todos", () => {
-        //console.log(todoList.todos.toString());
-        //  ^ yells, undefined is not an object
-        console.log(todoList.toString());
-        // ^ prints "'[object Object]'"
+        todoList.initialize();
         expect(todoList.todos.length).toBe(5);
     });
 
     it("contains a todo with an owner named 'Fry'", () => {
+        todoList.setOwner("Fry");
+        todoList.initialize();
         expect(todoList.todos.some((todo: Todo) => todo.owner === "Fry" )).toBe(true);
     });
 
     it("doesn't contain a todo with an owner named 'Maria'", () => {
+        todoList.setOwner("Maria");
+        todoList.initialize();
         expect(todoList.todos.some((todo: Todo) => todo.owner === "Maria" )).toBe(false);
     });
 
     it("has two todos that are in the category 'software design'", () => {
+        todoList.setCategory("software design");
+        todoList.initialize();
         expect(todoList.todos.filter((todo: Todo) => todo.category === "software design").length).toBe(2);
     });
 
     it("does somethig hopefully", () => {
         expect(API_URL).toBe("http://localhost:4567/api/");
     })
-
-
-
-
 });

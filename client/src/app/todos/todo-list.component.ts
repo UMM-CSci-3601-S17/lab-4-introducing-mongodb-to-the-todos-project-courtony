@@ -17,11 +17,9 @@ export class TodoListComponent {
     public targetStatus: boolean;
 
     constructor(private todoListService: TodoListService) {
-        // this.users = this.userListService.getUsers();
+
     }
 
-    // ngOnInit(): void {
-    // }
 
     onClickMe() {
         this.Msg = 'Searching';
@@ -33,5 +31,21 @@ export class TodoListComponent {
         );
 
         this.Msg = 'Enter';
+    }
+
+    setOwner(owner: string) {
+        this.searchOwner = owner;
+    }
+
+    setCategory(cat: string) {
+        this.searchCategory = cat;
+    }
+
+    setStatus(status: boolean) {
+        this.targetStatus = status;
+    }
+
+    initialize() {
+        this.onClickMe();
     }
 }
